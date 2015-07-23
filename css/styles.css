@@ -1,0 +1,36 @@
+/**
+ * Main styles.css for Project Board
+ * 
+ * Author: 	Maria D. Kelly
+ * Date:	July 2015
+ */
+
+body {
+  padding-top: 50px;
+}
+.main-content {
+  padding: 40px 15px;
+}
+
+/** For Loading Icon **/
+#loading {
+	border-radius: 6px;
+	background-color: #ccc;
+	padding: 40px;
+}
+
+.glyphicon-refresh-animate {
+    -animation: spin .7s infinite linear;
+    -webkit-animation: spin2 .7s infinite linear;
+}
+
+@-webkit-keyframes spin2 {
+    from { -webkit-transform: rotate(0deg);}
+    to { -webkit-transform: rotate(360deg);}
+}
+
+@keyframes spin {
+    from { transform: scale(1) rotate(0deg);}
+    to { transform: scale(1) rotate(360deg);}
+}
+/*******************/
