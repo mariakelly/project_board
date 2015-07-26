@@ -42,3 +42,16 @@ th.status {
 td {
 	white-space: pre;
 }
+
+td.stage,
+td.status {
+  cursor: pointer;
+}
+
+.edit-btn {
+  display: none;
+}
+
+td:hover .edit-btn {
+  display: block;
+}
