@@ -39,10 +39,10 @@ th.status {
 	width: 60%;
 }
 
-td {
+/*td {
 	white-space: pre;
 }
-
+*/
 td.stage,
 td.status {
   cursor: pointer;
@@ -54,4 +54,17 @@ td.status {
 
 td:hover .edit-btn {
   display: block;
+}
+
+.add-btn {
+   border-radius: 30px;
+   width: 35px;
+   height: 35px;
+   text-align:center;
+   padding: 6px 7px;
+   
+}
+
+mark {
+  background-color: yellow;
 }
