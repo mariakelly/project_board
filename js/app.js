@@ -9,12 +9,12 @@ var ProjectRow = React.createClass({
       return {
         editingName: true,
         editing: true
-      }
+      };
     }
     return {
       editingName: false,
       editing: false
-    }
+    };
   },
   componentWillMount: function() {
     this.stageChoices = ["In Specs", "In Dev", "In Test", "Maintenance", "In Updates", "On Hold"];
@@ -34,7 +34,7 @@ var ProjectRow = React.createClass({
       this.setState({editing:true});
   },
   save: function() {
-      var newName = (typeof this.refs.newName == "undefined") ? undefined : this.refs.newName.getDOMNode().value
+      var newName = (typeof this.refs.newName == "undefined") ? undefined : this.refs.newName.getDOMNode().value;
       var success = this.props.onChange(this.refs.newStatus.getDOMNode().value, this.refs.newStage.getDOMNode().value, newName, this.props.index);
       if (success) {
         this.setState({
@@ -81,12 +81,13 @@ var ProjectRow = React.createClass({
       );
     } else {
       var lastUpdated = this.formatDate(this.props.project.lastUpdated);
+	  lastUpdated = this.props.project.lastUpdated;
       var status = this.props.project.status.replace(/\n\r?/g, '<br />');
       var status = status.replace(/TODO?/g, '<mark>TODO</mark>');
       return (
         <td className="status">
           <a className="btn btn-danger btn-xs pull-right edit-btn glyphicon glyphicon-trash"></a>
-          <a className="btn btn-warning btn-xs pull-right edit-btn glyphicon glyphicon-pencil"></a>
+          <a onClick={this.edit} className="btn btn-warning btn-xs pull-right edit-btn glyphicon glyphicon-pencil"></a>
           <div dangerouslySetInnerHTML={{__html:status}}></div>
           <small className="pull-right">last updated: {lastUpdated} by <u>{this.props.project.lastUpdatedBy}</u></small>
         </td>

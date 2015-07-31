@@ -14,7 +14,7 @@ $app->register(new Silex\Provider\DoctrineServiceProvider(), array(
         'driver' => 'pdo_mysql',
         'host' => 'localhost',
         'dbname' => 'projects',
-        'user' => 'projectdbuser',
+        'user' => 'projectsdbuser',
         'password' => 'VEqdudsFvUBR677R',
         'charset' => 'utf8',
     ),
@@ -28,7 +28,7 @@ $app->get('/projects', function () use ($app) {
 		  SELECT max(lastUpdated) 
 		  from status
 		  WHERE project_id = s.project_id
-		)";
+		) ORDER BY p.name";
 
 	$projects = $app['db']->fetchAll($sql);
 
