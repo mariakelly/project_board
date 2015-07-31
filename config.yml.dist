@@ -1,0 +1,7 @@
+database:
+    driver: 'pdo_mysql'
+    host: 'localhost'
+    dbname: 'projects'
+    user: 'projectsdbuser'
+    password: ''
+    charset: 'utf8'

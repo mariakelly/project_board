@@ -8,16 +8,12 @@ $app = new Silex\Application();
 
 $app['debug'] = true;
 
+// Configure .yml service
+$app->register(new DerAlex\Silex\YamlConfigServiceProvider(__DIR__ . '/../config.yml'));
+
 //configure database connection
 $app->register(new Silex\Provider\DoctrineServiceProvider(), array(
-    'db.options' => array(
-        'driver' => 'pdo_mysql',
-        'host' => 'localhost',
-        'dbname' => 'projects',
-        'user' => 'projectsdbuser',
-        'password' => 'VEqdudsFvUBR677R',
-        'charset' => 'utf8',
-    ),
+    'db.options' => $app['config']['database'],
 ));
 
 // define route for /projects
