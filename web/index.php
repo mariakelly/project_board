@@ -24,7 +24,7 @@ $app->get('/projects', function () use ($app) {
 		  SELECT max(lastUpdated) 
 		  from status
 		  WHERE project_id = s.project_id
-		) ORDER BY p.name";
+		) AND p.isArchived = 0 ORDER BY p.name";
 
 	$projects = $app['db']->fetchAll($sql);
 
@@ -33,8 +33,10 @@ $app->get('/projects', function () use ($app) {
 
 // define route for /projects/{id}
 $app->get('/projects/{id}', function ($id) use ($app) {
-  $sql = "SELECT * FROM project WHERE id = ? and isDeleted = 0 ORDER BY name";
-  $project = $app['db']->fetchAssoc($sql, array((int) $id));
+  $sql = "SELECT p.id, p.name, s.stage, s.status, s.lastUpdated, s.lastUpdatedBy 
+		FROM status s join project p ON p.id = s.project_id
+		WHERE p.id = ? ORDER BY s.lastUpdated DESC";
+  $project = $app['db']->fetchAll($sql, array((int) $id));
 
   return $app->json($project);
 })->assert('id', '\d+');
@@ -71,16 +73,46 @@ $app->post('/projects/update', function (Request $request) use ($app) {
 	$rowData = getStatusRowForData($project);
 	$app['db']->insert('status', $rowData);
 
+	// Query for newProjectWithStatus
+	$sql = "SELECT p.id, p.name, s.stage, s.status, s.lastUpdated, s.lastUpdatedBy 
+		FROM status s join project p ON p.id = s.project_id
+		WHERE s.lastUpdated = (
+		  SELECT max(lastUpdated) 
+		  from status
+		  WHERE project_id = s.project_id
+		) AND p.id = ? ORDER BY p.name";
+
+	$newProjectWithStatus = $app['db']->fetchAll($sql, array($project['project_id']));
+	$newProjectWithStatus = (count($newProjectWithStatus)) ? $newProjectWithStatus[0] : null;
+
 	// Return successful update
 	return $app->json(array(
 		'status' => 'success',
-		'id' => $project['project_id'],
+		'project' => $newProjectWithStatus,
 	));
 });
 
 // Archive project
 $app->post('/projects/archive', function (Request $request) use ($app) {
-	echo "<pre>"; var_dump($request->get('project')); die;
+	$project = $request->get('project');
+	$id = $app['db']->fetchColumn("SELECT id FROM project WHERE name = ?", array($project["name"]));
+
+	// Ensure we're on the correct project
+	if ($id == $project['id']) {
+		$sql = "UPDATE project set isArchived = 1 where id = ?";
+		$result = $app['db']->executeUpdate($sql, array($id));
+		if ($result) {
+			return $app->json(array('status' => 'success'));
+		} else {
+			var_dump($result); die;
+		}
+	}
+
+	// Otherwise, we hit an error
+	return $app->json(array(
+		'status' => 'error',
+		'errorMessage' => "An error occurred while trying to archive the project.",
+	));
 });
 
 // default route

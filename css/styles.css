@@ -8,6 +8,17 @@
 body {
   padding-top: 50px;
 }
+
+#project-board {
+  position:relative;
+}
+
+.projectBoard {
+  position:absolute;
+  top: 0;
+  left: 0;
+}
+
 .main-content {
   padding: 40px 15px;
 }
@@ -52,19 +63,83 @@ td.status {
   display: none;
 }
 
+.actions .btn {
+  margin-right: 3px;
+}
+
+.actions .btn.pull-right:first-child {
+  margin-right: 0;
+}
+
 td:hover .edit-btn {
   display: block;
 }
 
+.return-btn,
 .add-btn {
    border-radius: 30px;
    width: 35px;
    height: 35px;
    text-align:center;
    padding: 6px 7px;
-   
 }
 
-mark {
+.return-btn {
+  padding: 6px 2px 0 0;
+}
+
+/*mark {
   background-color: yellow;
+}*/
+
+.status-saving {
+  text-align: center;
+}
+
+/** ---- CSS3 Animations ---- */
+.detailedBoard-appear,
+.mainBoard-appear {
+  opacity: 0.01;
+  transition: opacity 0.7s ease-in;
+}
+
+.detailedBoard-appear.detailedBoard-appear-active,
+.mainBoard-appear.mainBoard-appear-active {
+  opacity: 1;
+}
+
+.detailedBoard-leave {
+  left: 0;
+}
+
+.detailedBoard-leave.detailedBoard-leave-active {
+  left: -150%;
+  transition: left .4s ease-in;
+}
+
+.detailedBoard-enter {
+  left: 150%;
+}
+
+.detailedBoard-enter.detailedBoard-enter-active {
+  left: 0;
+  transition: left .4s ease-in;
+}
+
+.mainBoard-enter {
+  left: -150%;
+}
+
+.mainBoard-enter.mainBoard-enter-active {
+  left: 0;
+  transition: left .4s ease-in;
+}
+
+.mainBoard-leave {
+  left: 0;
+}
+
+.mainBoard-leave.mainBoard-leave-active {
+  left: 150%;
+  transition: left .4s ease-in;
 }
