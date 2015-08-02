@@ -31,18 +31,14 @@ var ProjectBoard = React.createClass({
     }.bind(this));
   },
   componentDidUpdate: function(prevProps, prevState) {
-    console.log('componentDidUpdate');
-
-    // if ($('.projectBoard table').length && !$.fn.DataTable.isDataTable('.projectBoard table')) {
-    //   this.setupDataTables(searchEvent = false);
-    //   console.log('Table exists, but is not a DT.');
-    // }
+    if ($('.projectBoard table').length && !$.fn.DataTable.isDataTable('#main-table')) {
+      this.setupDataTables(searchEvent = false);
+    }
   },
   update: function(newStatus, newStage, newName, i, callback) {
     var arr = this.state.projects;
 
     if (arr[i].status == newStatus && arr[i].stage == newStage) { // Do not update
-      console.log('status unchanged in update()');
       this.setState({canAdd: true});
       $('input[type=search]').attr('disabled', null)
       callback();
@@ -72,8 +68,6 @@ var ProjectBoard = React.createClass({
     } else {
       var self = this;
       $.post("web/projects/update", {project: arr[i]}, function(response){
-        console.log(arr[i]);
-        console.log('Update Response: ', response);
         if (response.status == "success") {
           arr[i] = response.project;
           self.setState({

@@ -25,20 +25,21 @@ var ProjectRow = React.createClass({
       this.setState({editing:true});
   },
   save: function() {
-      var newName = (typeof this.refs.newName == "undefined") ? undefined : this.refs.newName.getDOMNode().value;
-      this.setState({
-        saving: true
-      });
+    var newName = (typeof this.refs.newName == "undefined") ? undefined : this.refs.newName.getDOMNode().value;
+    this.setState({
+      saving: true
+    });
 
-      var self = this;
-      var success = this.props.onChange(this.refs.newStatus.getDOMNode().value, this.refs.newStage.getDOMNode().value, newName, this.props.index, function(){
-        console.log('callback was called after update');
+    var self = this;
+    var success = this.props.onChange(this.refs.newStatus.getDOMNode().value, this.refs.newStage.getDOMNode().value, newName, this.props.index, function(){
+      if (this.isMounted()) {        
         self.setState({
           saving: false,
           editingName: false, 
           editing: false          
         });
-      });
+      }
+    }.bind(this));
   },
   showDetails: function() {
     this.props.showDetails(this.props.index);
@@ -66,7 +67,6 @@ var ProjectRow = React.createClass({
       callback: function(result) {
         if (result) {
           $.post("web/projects/archive", {project: self.props.project}, function(response){
-            console.log('archive response', response);
             if (response.status != "error") {
               self.props.removeProject(self.props.index);
             } else {
