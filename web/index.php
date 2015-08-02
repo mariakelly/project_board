@@ -59,31 +59,22 @@ $app->post('/projects/update', function (Request $request) use ($app) {
 
 			// Insert new status
 			$rowData = getStatusRowForData($project);
-			$app['db']->insert('status', $rowData);			
+			$app['db']->insert('status', $rowData);	
 		} catch (\Exception $e) {
 			return $app->json(array("status" => "error", "errorMessage" => $e->getMessage()));
 		}
+	} else {
+		/* ==== Existing Project ===== */
+		// Get generated ID
+		$project['project_id'] = $project['id']; // This is the id of the project.		
+
+		// Insert new status
+		$rowData = getStatusRowForData($project);
+		$app['db']->insert('status', $rowData);
 	}
 
-	/* ==== Existing Project ===== */
-	// Get generated ID
-	$project['project_id'] = $project['id']; // This is the id of the project.
-
-	// Insert new status
-	$rowData = getStatusRowForData($project);
-	$app['db']->insert('status', $rowData);
-
 	// Query for newProjectWithStatus
-	$sql = "SELECT p.id, p.name, s.stage, s.status, s.lastUpdated, s.lastUpdatedBy 
-		FROM status s join project p ON p.id = s.project_id
-		WHERE s.lastUpdated = (
-		  SELECT max(lastUpdated) 
-		  from status
-		  WHERE project_id = s.project_id
-		) AND p.id = ? ORDER BY p.name";
-
-	$newProjectWithStatus = $app['db']->fetchAll($sql, array($project['project_id']));
-	$newProjectWithStatus = (count($newProjectWithStatus)) ? $newProjectWithStatus[0] : null;
+	$newProjectWithStatus = getProjectData($project['project_id'])
 
 	// Return successful update
 	return $app->json(array(
@@ -138,6 +129,25 @@ function getStatusRowForData($projectData)
 		'lastUpdated' => date("Y-m-d H:i:s"),
 		'lastUpdatedBy' => 'admin',
 	));
+}
+
+/**
+ * Gather all project data to for the given id
+ */
+function getProjectData($id)
+{
+	$sql = "SELECT p.id, p.name, s.stage, s.status, s.lastUpdated, s.lastUpdatedBy 
+		FROM status s join project p ON p.id = s.project_id
+		WHERE s.lastUpdated = (
+		  SELECT max(lastUpdated) 
+		  from status
+		  WHERE project_id = s.project_id
+		) AND p.id = ? ORDER BY p.name";
+
+	$newProjectWithStatus = $app['db']->fetchAll($sql, array($id));
+	$newProjectWithStatus = (count($newProjectWithStatus)) ? $newProjectWithStatus[0] : null;
+
+	return $newProjectWithStatus;
 }
 
 

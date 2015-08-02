@@ -17,6 +17,11 @@ body {
   position:absolute;
   top: 0;
   left: 0;
+  width: 100%;
+}
+
+.projectBoard table {
+  width: 100%;
 }
 
 .main-content {
@@ -84,6 +89,10 @@ td:hover .edit-btn {
    padding: 6px 7px;
 }
 
+.add-btn {
+  margin-top: -25px;
+}
+
 .return-btn {
   padding: 6px 2px 0 0;
 }
@@ -94,6 +103,10 @@ td:hover .edit-btn {
 
 .status-saving {
   text-align: center;
+}
+
+td.status textarea {
+  width: 100% !important;
 }
 
 /** ---- CSS3 Animations ---- */

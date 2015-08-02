@@ -21,18 +21,30 @@ var ProjectBoard = React.createClass({
   componentDidMount: function() {
     $.getJSON(this.props.source, function(result) {
       if (this.isMounted()) {
+        // Update with projects
         this.setState({
           projects: result,
         });
+
+        this.setupDataTables();
       }
     }.bind(this));
+  },
+  componentDidUpdate: function(prevProps, prevState) {
+    console.log('componentDidUpdate');
+
+    if ($('.projectBoard table').length && !$.fn.DataTable.isDataTable('.projectBoard table')) {
+      this.setupDataTables(searchEvent = false);
+      console.log('Table exists, but is not a DT.');
+    }
   },
   update: function(newStatus, newStage, newName, i, callback) {
     var arr = this.state.projects;
 
-    if (arr[i].status = newStatus) { // Do not update
+    if (arr[i].status == newStatus && arr[i].stage == newStage) { // Do not update
       console.log('status unchanged in update()');
       this.setState({canAdd: true});
+      $('input[type=search]').attr('disabled', null)
       callback();
 
       return true;
@@ -69,6 +81,7 @@ var ProjectBoard = React.createClass({
             canAdd: true,
             errors: errorList
           });
+          $('input[type=search]').attr('disabled', null);
           callback();         
         }
       });
@@ -88,12 +101,15 @@ var ProjectBoard = React.createClass({
       projects: arr, 
       canAdd: false
     });
+
+    $('input[type=search]').attr('disabled', 'disabled');
   },
   cancelAdd: function() {
     this.state.projects.pop();
     this.setState({
       canAdd: true
     });    
+    $('input[type=search]').attr('disabled', null)
   },
   remove: function(i) {
     var arr = this.state.projects;
@@ -136,6 +152,26 @@ var ProjectBoard = React.createClass({
       selectedProject: null,
       selectedProjectDetails: null
     });
+  },
+  setupDataTables: function(searchEvent) {
+    // Datatables
+    var self = this;
+    if ($('#main-table').length) {
+      mainTable = $('#main-table').dataTable({
+        "bAutoWidth": false,
+        "bDestroy": true,
+        paging: false
+      });
+
+      if (typeof searchEvent != "undefined" || !searchEvent) {
+        mainTable.on('search.dt', function(){
+          var currentSearch = mainTable.api().search();
+          self.setState({
+            canAdd: (currentSearch == "")
+          });
+        });
+      }
+    }
   },
   renderDetailView: function(errors) {
     var rows = [];
@@ -215,7 +251,7 @@ var ProjectBoard = React.createClass({
       <ReactCSSTransitionGroup transitionName="mainBoard" transitionAppear={true}>
         <div className="projectBoard" key="main-view">
           {errorDisplay}
-          <table className="table table-striped table-bordered table-hover">
+          <table className="table table-striped table-bordered table-hover" id="main-table">
               <thead>
                   <tr>
                       <th className="name">Project Name</th>
