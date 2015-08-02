@@ -33,10 +33,10 @@ var ProjectBoard = React.createClass({
   componentDidUpdate: function(prevProps, prevState) {
     console.log('componentDidUpdate');
 
-    if ($('.projectBoard table').length && !$.fn.DataTable.isDataTable('.projectBoard table')) {
-      this.setupDataTables(searchEvent = false);
-      console.log('Table exists, but is not a DT.');
-    }
+    // if ($('.projectBoard table').length && !$.fn.DataTable.isDataTable('.projectBoard table')) {
+    //   this.setupDataTables(searchEvent = false);
+    //   console.log('Table exists, but is not a DT.');
+    // }
   },
   update: function(newStatus, newStage, newName, i, callback) {
     var arr = this.state.projects;

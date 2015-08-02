@@ -74,7 +74,7 @@ $app->post('/projects/update', function (Request $request) use ($app) {
 	}
 
 	// Query for newProjectWithStatus
-	$newProjectWithStatus = getProjectData($project['project_id'])
+	$newProjectWithStatus = getProjectData($project['project_id'], $app);
 
 	// Return successful update
 	return $app->json(array(
@@ -134,7 +134,7 @@ function getStatusRowForData($projectData)
 /**
  * Gather all project data to for the given id
  */
-function getProjectData($id)
+function getProjectData($id, $app)
 {
 	$sql = "SELECT p.id, p.name, s.stage, s.status, s.lastUpdated, s.lastUpdatedBy 
 		FROM status s join project p ON p.id = s.project_id
